@@ -1,0 +1,58 @@
+@baseUrl = http://127.0.0.1:8000
+@clientId = 019b2990-b4c6-7264-87ea-2642a1c0b8c9
+@clientSecret = TeGoLDGmdOdvNOYpY8902hYMZ4pTDtKVQsuSuVIC
+
+### 1. Request Access Token (Client Credentials)
+# @name loop
+POST {{baseUrl}}/oauth/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&client_id={{clientId}}&client_secret={{clientSecret}}
+
+###
+
+@accessToken = {{loop.response.body.access_token}}
+
+### 2. Get All Products
+GET {{baseUrl}}/api/products
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### 3. Create New Product
+# @name create
+POST {{baseUrl}}/api/products
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "Produk Test HTTP",
+    "description": "Dibuat dari VS Code REST Client",
+    "price": 12500,
+    "stock": 100
+}
+
+###
+
+@productId = {{create.response.body.id}}
+
+### 4. Show Product
+GET {{baseUrl}}/api/products/{{productId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### 5. Update Product
+PUT {{baseUrl}}/api/products/{{productId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "Produk Test HTTP Updated",
+    "price": 99000
+}
+
+### 6. Delete Product
+DELETE {{baseUrl}}/api/products/{{productId}}
+Authorization: Bearer {{accessToken}}
+Accept: application/json
